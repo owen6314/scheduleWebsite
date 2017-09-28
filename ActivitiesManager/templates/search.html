@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+{% load staticfiles %}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h2>
+                <strong>
+                    在这里进行活动检索
+                </strong>
+                </h3>
+                <ul class="nav nav-tabs">
+                    <li>
+                        <a href="{% url 'homepage' %}">我的主页</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'manage' %}">活动管理</a>
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'search' %}">活动搜索</a>
+                    </li>
+                    <li>
+                        <a href="{% url  'userinfo' %}">个人信息</a>
+                    </li>
+                    <li>
+                        <a href="{% url  'help' %}">帮助信息</a>
+                    </li>
+                    <li class="dropdown pull-right">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">创建新活动
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url 'create' %}">创建单个活动</a></li>
+                            <li>
+                                <a href="{% url 'upload' %}">批量导入活动</a></li>
+                        </ul>
+                    </li>
+                </ul>
+        </div>
+    </div>
+    <hr>
+    <form method="post" action="{% url 'search-result' %}">
+    {% csrf_token %}
+    <div class="row-fluid">
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+            <input name="keyWords" type="text" class="form-control input-lg" placeholder="输入搜索关键词，多个关键词用逗号分隔(中英文均可)">
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <button class="btn btn-primary btn-lg btn-block">{% bootstrap_icon 'search' %}</button>
+        </div>
+    </div>
+    
+    <br><br><br>
+    <div class="row-fluid">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+            <label class="control-label center-block" for="id_1">活动类别</label>
+            <select name="type" id="id_1" class="form-control"
+                    style="width:100%;">
+            <option value="0">全部</option>
+            {% for item in types %}
+            <option value={{item.content}}>{{item.content}}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+            <label class="control-label center-block" for="id_2">活动时长</label>
+            <select name="duration" id="id_2" class="form-control"
+                    style="width:100%;">
+                <option value="0">全部</option>
+                <option value="1">少于1小时</option>
+                <option value="2">1到3小时</option>
+                <option value="3">多于3小时</option>
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+            <label class="control-label center-block" for="id_3">开始日期</label>
+            <input name="begin_time" id="id_3" class="form-control" placeholder="格式:yyyy-mm-dd" 
+                    style="width:100%;"></input>
+
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+            <label class="control-label center-block" for="id_4">活动标签</label>
+            <input name="tag" id="id_3" class="form-control"
+                    style="width:100%;" placeholder="多个标签用逗号分割"></input>
+        </div>
+        </form>
+    </div>
+    <br><br><br>
+    <hr>
+    <div class="row-fluid">
+        <table class="table">
+            <tbody>
+            {% for activity in activities %}
+            <tr>
+                <td><a class="lead"
+                       href="{% url 'activity' activity.idActivity %}"><strong>{{activity.title}}</strong></a>
+                    &nbsp{{activity.type}}
+                    &nbsp
+                    {% if activity.is_public %}
+                    <label>公有</label>
+                    {% else %}
+                    <label>私人</label>
+                    {% endif %}
+                    <div>
+                        {{activity.description}}
+                    </div>
+                    <br>
+                    <div class="pull-right">
+                        {% bootstrap_icon 'user' %}<b>{{activity.creator}}</b>
+                        {% bootstrap_icon 'time' %}{{activity.begin_time}}——
+                        {{activity.end_time}}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

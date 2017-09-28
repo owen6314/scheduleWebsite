@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+<div class="row-fluid">
+    <div class="span12">
+        <h2>
+            <strong>
+                这是您的相关信息
+            </strong>
+        </h2>
+        <ul class="nav nav-tabs">
+            <li>
+                <a href="{% url 'homepage' %}">我的主页</a>
+            </li>
+            <li>
+                <a href="{% url 'manage' %}">活动管理</a>
+            </li>
+            <li>
+                <a href="{% url 'search' %}">活动搜索</a>
+            </li>
+            <li class="active">
+                <a href="{% url  'userinfo' %}">个人信息</a>
+            </li>
+            <li>
+                <a href="{% url 'help' %}">帮助信息</a>
+            </li>
+            <li class="dropdown pull-right">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">创建新活动
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{% url 'create' %}">创建单个活动</a></li>
+                    <li>
+                        <a href="{% url 'upload' %}">批量导入活动</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<hr>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>用户信息</h3>
+        <hr>
+        <h4>用户名:<b>{{user.username}}</b></h4>
+        <h4>用户头像:</h4>
+        <img src="/{{avatar.avatar}}" width="140px">
+        <hr>
+        <div>
+        <span class="glyphicon glyphicon-home" style="font-size:18px"> </span> <span style="font-size:18px">邮箱:<strong>{{user.email}}</strong></span>  
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <form method="post" action="{% url 'userinfo-submit' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type="button" class="btn btn-block btn-lg btn-success" data-toggle="modal"
+                data-target="#myModal">修改个人信息
+        </button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document" style="width:450px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel"><strong>修改个人信息</strong>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <h3 class="text-muted"><strong>邮箱</strong></h3>
+                            <input name="email" id="input-id" type="email">
+                        </div>
+                        <div class="form-group">
+                            <h3 class="text-muted"><strong>头像</strong></h3>
+                            <input name="avatar" id="input-id2" type="file">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+{% load bootstrap3 %}
+{% include 'messages.html' %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>动规——规划你的生活</title>
+    {% load static %}
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <script src="../static/bootstrap/jquery/jquery-3.1.1.min.js"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+        width: 50%;
+        padding: 100px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body{
+        /*background-image: url(static/images/qz.jpg);
+        background-repeat:repeat;*/
+      }
+      .container{
+        min-width: 970px;
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+      #target {
+        width: 345px;
+      }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header clearfix">
+        <h1 class="text-muted" align="middle"><b>动规</b></h1>
+        <h2 class="text-primary" align="middle">规划生活，寻找快乐</h2>
+    </div>
+    <nav>
+        <ul class="nav nav-pills pull-right">
+            {% if user.is_authenticated %}
+            <li class="pull-right" role="presentation">
+                <a href="{% url 'logout' %}">登出(<b>{% bootstrap_icon 'user' %}{{user.username}}</b>)</a>
+            </li>
+            <li class="pull-right" role="presentation">
+                <a href="{%url 'homepage' %}">我的主页</a>
+            </li>
+            {% else %}
+            <div class="container-fluid ">
+                <div class="row-fluid">
+                    <li class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    </li>
+                    <li class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <form method="post" action="{% url 'authenticate' %}">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#myModal">登录
+                            </button>
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document" style="width:400px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel"><strong>登录</strong>
+                                            </h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="username">用户名</label>
+                                                <input type="text" id="username" name="username" class="form-control"
+                                                       placeholder="用户名" required/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password">密码</label>
+                                                <input type="password" id="password" name="password"
+                                                       class="form-control"
+                                                       placeholder=" 密码" required/>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">登录</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+                    <li class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <form method="post" action="{% url 'signup-submit' %}">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-success" data-toggle="modal"
+                                    data-target="#myModal1">注册
+                            </button>
+                            <div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document" style="width:400px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel1"><strong>注册</strong>
+                                            </h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" action="{% url 'signup-submit' %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label for="username">用户名</label>
+                                                    <input type="text" id="username1" name="username"
+                                                           class="form-control"
+                                                           placeholder="Username" required/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="password">密码</label>
+                                                    <input type="password" id="password1" name="password"
+                                                           class="form-control"
+                                                           placeholder="Password" required/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="password">邮箱</label>
+                                                    <input type="email" id="email" name="email" class="form-control"
+                                                           placeholder="Email"
+                                                           required/>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">注册</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+                </div>
+            </div>
+            {% endif %}
+        </ul>
+    </nav>
+    <section id="content">
+        {% block content %}{% endblock %}
+    </section>
+    <hr>
+    <label>Advertisement</label>
+
+     <!-- 轮播广告 -->
+     <div id="LBbox" class="carousel slide" data-ride="carousel">
+         <!-- 圆点按钮 -->
+         <ol class="carousel-indicators">
+           <li data-target="#LBbox" data-slide-to="0" class="active"></li>
+           <li data-target="#LBbox" data-slide-to="1"></li>
+           <li data-target="#LBbox" data-slide-to="2"></li>
+           <li data-target="#LBbox" data-slide-to="3"></li>
+           <li data-target="#LBbox" data-slide-to="4"></li>
+         </ol>
+         <!-- 轮播内容 -->
+         <div class="carousel-inner" role="listbox">
+           <div class="item active center-block">
+             <img src="../static/images/ad_1.jpg" width="100%" alt="1 slide">
+             <div class="carousel-caption">
+               <h1>尼尔自动机理论</h1>
+                 <p>建议配合<I>Introduction to Automata Theory, Languages, and Computation食用</I></p>
+               <p>
+                 <a href="http://store.steampowered.com/agecheck/app/524220/" class="btn btn-lg" style="background:tarnsparent;color:white;"  role="button">开始学习</a>
+               </p>
+             </div>
+           </div>
+           <div class="item">
+             <img src="../static/images/ad_2.jpg" width="100%" alt="2 slide">
+             <div class="carousel-caption">
+               <h1>Steam 您的理财助手</h1>
+               <p>G胖，掌握核心科技，大快所有人心的大好事</p>
+               <p>
+                 <a href="http://store.steampowered.com/" class="btn btn-lg" style="background:tarnsparent;color:white;" role="button">开始理财</a>
+               </p>
+             </div>
+           </div>
+          <div class="item">
+             <img src="../static/images/ad_4.JPG" width="100%" alt="3 slide">
+             <div class="carousel-caption">
+               <h1>GOBANG五子棋</h1>
+               <p>五子棋应用，曾击败GOMUKU五子棋</p>
+               <p>
+                 <a href="http://learn.tsinghua.edu.cn/" class="btn btn-lg" style="background:tarnsparent;color:white;" role="button">我想看看</a>
+               </p>
+             </div>
+           </div>
+              <div class="item">
+             <img src="../static/images/ad_3.png" width="100%" alt="4 slide">
+             <div class="carousel-caption">
+               <h1 style="font-color:black">GOMOKU五子棋</h1>
+               <p>五子棋应用，曾击败GOBANG五子棋</p>
+               <p>
+                 <a href="http://learn.tsinghua.edu.cn/" class="btn btn-lg" style="background:tarnsparent;color:white;" role="button">我要体验</a>
+               </p>
+             </div>
+           </div>
+            <div class="item">
+             <img src="../static/images/ad_5.PNG" width="100%" alt="4 slide">
+             <div class="carousel-caption">
+              <p>
+                 <a href="http://learn.tsinghua.edu.cn/" class="btn btn-lg" style="background:tarnsparent;color:white;" role="button">我要体验</a>
+               </p>
+             </div>
+           </div>
+         </div>
+         <!-- 左按钮 -->
+         <a href="#LBbox" class="left carousel-control" role="button" data-slide="prev">
+           <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+           <span class="sr-only">上一页</span>
+         </a>
+         <!-- 右按钮 -->
+         <a href="#LBbox" class="right carousel-control" role="button" data-slide="next">
+           <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+           <span class="sr-only">下一页</span>
+         </a>
+     </div>
+
+    <footer class="footer">
+        <p>&copy; 2017 张迁瑞 朱泓宇 寇植</p>
+    </footer>
+</div>
+{% block map_block %}
+{% endblock %}
+</body>
+</html>

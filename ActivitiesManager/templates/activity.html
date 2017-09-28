@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+<div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>{{activity.title}}</h3>
+            {% if activity.is_public %}
+            <label>公有活动</label>
+            {% else %}
+            <label>私人活动</label>&nbsp
+            <!--<button class="btn btn-primary">设为公有</button>-->
+            {% endif %}
+            <br>
+            <span>
+                {% bootstrap_icon 'user' %}创建者:<strong>{{activity.creator}}</strong>
+                <br>
+                {% bootstrap_icon 'time' %} From&nbsp<span>{{activity.begin_time}}</span>
+                To&nbsp<span>{{activity.end_time}}</span>
+                <br>
+                {% bootstrap_icon 'home' %}&nbsp<span>活动地点:{{activity.location}}</span>
+                <br>
+                创建于：&nbsp<span>{{activity.create_time}}</span>
+                <br>
+                标签：
+                {% load tagging_tags %}
+                {% tags_for_object activity as tags %}
+
+                {% for tag in tags %}{{tag.name}}, {% endfor %}
+            </span>
+        </div>
+        <div class="panel-heading"> 活动类型:{{activity.type}}</div>
+        <div class="panel-body word-wrap">活动介绍：
+            {{ activity.description }}
+        </div>
+    </div>
+    <div class="panel-body" align="middle">
+        <iframe frameborder="0" style="border:0"
+                src="https://www.google.com/maps/embed/v1/search?q={{ activity.location }}&key=AIzaSyD-elxVFIW6D5me2L0xiGrEpcS89c03irc"
+                allowfullscreen></iframe>
+    </div>
+    <div class="panel-body">
+        {% for image in activity.activity_images.all %}
+        <img src='/{{ image.image }}' class="img-responsive img-polaroid center-block"/>
+        {% endfor %}
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-4">
+                {%if can_join %}
+                <form method="post" action="{% url 'activity-submit' idActivity %}">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-block btn-lg btn-success" data-toggle="modal"
+                            data-target="#myModal">我想参加
+                    </button>
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document" style="width:450px;">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel"><strong>为活动&nbsp{{activity.title}}&nbsp选择优先度</strong>
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <h3 class="text-muted"><strong>活动优先度</strong></h3>
+                                        <input name="priority" id="input-id" type="number" class="rating" min=0 max=5
+                                               step=1
+                                               data-size="md">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">确定参加</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                {% else %}
+                <button type="button" class="btn btn-block btn-lg btn-disable" data-toggle="modal"
+                        data-target="#myModal">您已参加该活动
+                </button>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                {% if can_join %}
+                <button type="submit" class="btn btn-block btn-lg btn-disable">您未选择该活动</button>
+                {% else %}
+                <form method="post" action="{% url 'activity-unsubmit' idActivity %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-block btn-lg btn-warning">我不想参加</button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                {% if can_delete %}
+                <form method="post" action="{% url 'activity-delete' idActivity %}">
+                {% csrf_token %}
+                <button class="btn btn-block btn-lg btn-danger">永久删除该活动</button>
+                </form>
+                {% else %}
+                <button class="btn btn-block btn-lg disable">您不能删除该活动</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+<script src="../static/bootstrap/jquery/jquery-3.1.1.min.js"></script>
+<script src="../static/bootstrap/js/bootstrap.min.js"></script>
+
+<link href="../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="../static/bootstrap/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../static/bootstrap/jquery/jquery-3.1.1.min.js"></script>
+<script src="../static/bootstrap/js/star-rating.min.js" type="text/javascript"></script>
+
+{% endblock %}

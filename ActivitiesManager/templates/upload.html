@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+<h3>批量导入活动</h3>
+<form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>
+        <input id="id_file" type="file" class="" name="file">
+    </p>
+    <button type="submit" class="btn btn-success">提交</button>
+</form>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+<div class="row-fluid">
+    <div class="span12">
+        <h2>
+            <strong>
+                动规V1.1.2使用帮助
+            </strong>
+        </h2>
+        <ul class="nav nav-tabs">
+            <li>
+                <a href="{% url 'homepage' %}">我的主页</a>
+            </li>
+            <li>
+                <a href="{% url 'manage' %}">活动管理</a>
+            </li>
+            <li>
+                <a href="{% url 'search' %}">活动搜索</a>
+            </li>
+            <li>
+                <a href="{% url  'userinfo' %}">个人信息</a>
+            </li>
+            <li class="active">
+                <a href="{% url  'help' %}">帮助信息</a>
+            </li>
+            <li class="dropdown pull-right">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">创建新活动
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{% url 'create' %}">创建单个活动</a></li>
+                    <li>
+                        <a href="{% url 'upload' %}">批量导入活动</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<hr>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Hi，欢迎来到动规！在开始您美妙的规划之旅前，欢迎阅读以下的网站功能说明。</h4>
+        <h3>1.个人信息</h3>
+        <h4>1.1 用户名和密码一经注册无法更改，如果您还打算再次访问本网站，请牢记。</h4>
+        <h4>1.2 您可以用户信息页面上传个性头像和修改邮箱。两个修改会同时出现，但您也可以只修改其中一个。</h4>
+        <h3>2.创建活动</h3>
+        <h4>2.1 创建单个活动时，请根据网站提示进行操作。活动地点显示使用了GoogleMap，可以根据您的输入显示可选地点，十分便捷。但不科学的上网方式可能导致这个模块加载缓慢或无法加载。如出现此情况，请放弃填写地点。</h4>
+            <h4>2.2 批量导入活动需要在导入界面上传CSV格式文件，具体格式:每行从左到右为“活动名称，活动描述，开始时间，结束时间（要求用python的datetime格式表示)，地点，True/False(“是否为公共活动"),活动类型"。格式限制较为严格，格式出错将无法提交成功。</h4>
+        <h3>3.活动规划与管理</h3>
+        <h4>3.1 活动分为公共活动和私人活动，公共活动所有用户可见，私人活动仅有创建者可见。如果您想和世界分享您刚编的活动，请在创建时勾选“公共活动”。</h4>
+        <h4>3.2 查看和管理活动：在活动管理页面单击活动名称即可进入活动详情页。详情页下方可以选则是否参加或退出该活动，如果活动是您创建的，您还可以删除活动。</h4>
+        <h4>3.3 规划活动：在活动管理页面单击“规划我的活动”，可以根据需要选择不同的活动规划方案。接下来，可以在我的主页看到安排完成后的时间轴，右侧页面会显示由于冲突无法参加的活动。</h4>
+        <h4>3.4 搜索活动：在活动管理页面单击活动搜索，或在导航栏直接选择活动搜索页面，均可开启活动搜索功能。目前活动搜索功能支持关键字查询，活动时长、类型、开始时间及标签查询。</h4>
+        <h3>4.其他</h3>
+        <h4>4.1 如果您对我们的网站感到满意，请给我们一个好评。如果实在感到特别满意，也可以扫描下面的二维码进行小额打赏。您的鼓励将是我们最大的动力。</h4>
+        <h4>4.2 商业合作请联系thss15_zhangqr@163.com,我们的广告位随时为您效劳。</h4>
+        <img src="../static/images/QRCode.PNG" width="150px">
+    </div>
+</div>
+{% endblock %}

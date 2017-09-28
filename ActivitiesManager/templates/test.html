@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+<div class="panel panel-default">
+	<div class="panel-body">
+        {% for item in optimal_activity_list %}
+		<p>{{item.title}}</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
