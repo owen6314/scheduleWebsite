@@ -132,14 +132,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # settings for media
 MEDIA_ROOT = 'ActivitiesManager'
 
-# settings about email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = False
-EMAIL_HOST = 'smtp.163.com'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = 'thss15_zhangqr@163.com'
-EMAIL_HOST_PASSWORD = '961218oz'
-DEFAULT_FROM_EMAIL = 'thss15_zhangqr@163.com'
-
 #settings for celery
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
